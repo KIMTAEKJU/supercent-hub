@@ -23,6 +23,13 @@
 import { kv } from '@vercel/kv'
 import { z } from 'zod'
 
+import {
+  MOCK_FEEDBACKS,
+  MOCK_PROTOTYPES,
+  MOCK_REQUESTS,
+  isMockEnabled,
+} from './kv-mock'
+
 // --- Zod 스키마 (런타임 validation + 타입 추론) ---
 
 export const RequestSchema = z.object({
@@ -95,6 +102,7 @@ export async function getRequest(id: string): Promise<RequestRecord | null> {
 
 /** 모든 Request 반환 (인덱스 세트 → 개별 get 병렬). */
 export async function listRequests(): Promise<RequestRecord[]> {
+  if (isMockEnabled()) return MOCK_REQUESTS
   const ids = (await kv.smembers(REQ_INDEX)) ?? []
   if (ids.length === 0) return []
   const rows = await Promise.all(ids.map((id) => kv.get<RequestRecord>(reqKey(id))))
@@ -115,6 +123,7 @@ export async function getPrototype(id: string): Promise<PrototypeRecord | null> 
 }
 
 export async function listPrototypes(): Promise<PrototypeRecord[]> {
+  if (isMockEnabled()) return MOCK_PROTOTYPES
   const ids = (await kv.smembers(PROTO_INDEX)) ?? []
   if (ids.length === 0) return []
   const rows = await Promise.all(ids.map((id) => kv.get<PrototypeRecord>(protoKey(id))))
@@ -131,6 +140,7 @@ export async function setFeedback(f: FeedbackRecord): Promise<void> {
 
 /** 특정 프로토타입에 달린 피드백만 반환. */
 export async function listFeedbacks(prototypeId: string): Promise<FeedbackRecord[]> {
+  if (isMockEnabled()) return MOCK_FEEDBACKS.filter((f) => f.prototypeId === prototypeId)
   const ids = (await kv.smembers(fbIndexKey(prototypeId))) ?? []
   if (ids.length === 0) return []
   const rows = await Promise.all(ids.map((id) => kv.get<FeedbackRecord>(fbKey(id))))
@@ -138,6 +148,17 @@ export async function listFeedbacks(prototypeId: string): Promise<FeedbackRecord
 }
 
 // --- 승격 판정 ---
+
+/**
+ * 동기 승격 후보 판정 — prototype 레코드만으로 즉시 결정 (§11).
+ *   - 누적 사용 10회 이상 OR
+ *   - 긍정 피드백 3건 이상
+ * RSC 카드 렌더 시 per-card await 를 피하려고 이 경로를 사용한다.
+ * stale 카운터 fallback 이 필요하면 비동기 `isPromotionCandidate(id)` 를 쓸 것.
+ */
+export function isPromotionCandidateSync(p: PrototypeRecord): boolean {
+  return p.useCount >= 10 || p.positiveFeedbackCount >= 3
+}
 
 /**
  * 승격 후보 판정 (§11).

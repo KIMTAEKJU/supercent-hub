@@ -37,7 +37,9 @@ export const RequestSchema = z.object({
   problem: z.string().min(1),
   currentWay: z.string().min(1),
   expectedOutcome: z.string().min(1),
-  examples: z.string().min(1),
+  // 와이어프레임 3: "예시 입력/출력 (선택)" — optional 필드.
+  // 기존 mock/테스트 데이터는 항상 채워 넣지만, 폼에서 빈 값이면 생략될 수 있다.
+  examples: z.string().default(''),
   status: z.enum(['pending', 'generating', 'ready', 'failed']),
   createdAt: z.string(),
   // Routine 실행 추적용 (부록 B): 선기록 시점엔 없음, Routine 이 쓰면 채워짐.

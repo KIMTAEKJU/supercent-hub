@@ -19,6 +19,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { setRequest } from './kv'
+import { triggerGeneratePrototype } from './routines'
 import { RequestInputSchema } from './schemas'
 
 export type SubmitRequestState =
@@ -66,19 +67,27 @@ export async function submitRequest(
 
   const requestId = `req_${randomUUID()}`
 
-  // 부록 B: 이 쓰기는 "선기록" — Task 10 Routine fire 전에 pending 으로 마크해
-  // 재호출 시 Hub 서버가 중복을 감지해 skip 할 수 있게 한다.
-  await setRequest({
+  // 부록 B: "선기록" — Routine fire 전에 pending 으로 마크해 재호출 시 중복 감지 가능.
+  const record = {
     id: requestId,
     problem: parsed.data.problem,
     currentWay: parsed.data.currentWay,
     expectedOutcome: parsed.data.expectedOutcome,
-    // examples 는 optional — 빈 값이면 undefined 가 되며 KV 엔 빈 문자열로 저장.
-    // (Routine 프롬프트에서 examples 없음을 허용. Task 10 에서 스키마 조율 가능.)
+    // examples 는 optional — 빈 값이면 빈 문자열로 저장 (Routine 프롬프트 호환).
     examples: parsed.data.examples ?? '',
-    status: 'pending',
+    status: 'pending' as const,
     createdAt: new Date().toISOString(),
-  })
+  }
+
+  await setRequest(record)
+
+  // Task 10: generate-prototype Routine fire (fire-and-forget).
+  // 실패해도 사용자는 이미 제출됐으므로 폴링 화면이 KV status 를 보고 처리한다.
+  // env 미설정 시엔 로그만 남기고 삼킴 — 개발 환경(`USE_MOCK_KV=1`)에서 Routine 없이 UI 만 테스트 가능.
+  const fire = await triggerGeneratePrototype(record)
+  if (!fire.ok) {
+    console.error(`[submitRequest] Routine fire failed for ${requestId}: ${fire.error}`)
+  }
 
   return { ok: true, requestId }
 }

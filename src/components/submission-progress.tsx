@@ -10,13 +10,8 @@
  *
  * 폴링 전략 (부록 B):
  *   - KV 가 유일한 진행 상태 채널 → `/api/proto/[id]/status` 를 3 초마다 fetch.
- *   - 현재 KV status 는 pending/generating/ready/failed 4종만 정의됨.
- *   - 세부 phase (interpret/.../register) 는 Task 11 에서 확장 — 지금은 UI 로만 준비.
- *     현 단계 매핑:
- *       pending    → phase 1 활성 (요청 해석 대기 중)
- *       generating → phase 2 활성 (코드 생성 중)
- *       ready      → 5 단계 모두 완료 + router.push('/prototype/:id')
- *       failed     → 에러 카드
+ *   - KV status: pending/interpreting/generating/committing/ready/failed (+엔드포인트가 deploying 동적 조립).
+ *   - 단계 매핑 로직은 `@/lib/submission-steps` 에서 단일 출처로 관리.
  *
  * React best practices 적용:
  *   - setInterval cleanup 필수 (rerender-* / 누수 방지) — useEffect return.
@@ -43,11 +38,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import type { RequestRecord } from '@/lib/kv'
+import {
+  type PollStatus,
+  statusToCompletedSteps,
+} from '@/lib/submission-steps'
 
+// `initialStatus` prop 타이핑 (KV 에 저장 가능한 상태만) — Task 4 에서 StageKey/STAGE_LABEL 추가 예정.
 type KvStatus = RequestRecord['status']
-// Phase 2 Task 11 (Option X): /api/proto/[id]/status 가 Vercel 배포 BUILDING 일 때
-// 'deploying' 가상 상태를 반환. terminal 아님 (계속 폴링).
-type PollStatus = KvStatus | 'deploying'
 
 type Step = {
   key: 'interpret' | 'generate' | 'commit' | 'deploy' | 'register'
@@ -66,31 +63,6 @@ const STEPS: readonly Step[] = [
 
 const POLL_INTERVAL_MS = 3_000
 const TIMEOUT_MS = 30 * 60 * 1_000 // 30 분
-
-/**
- * KV status → 5 단계 중 현재까지 "완료된 단계 수" 로 매핑.
- *   pending    → 0 (첫 단계가 in-progress)
- *   generating → 1 (해석 완료, 생성 단계 in-progress)
- *   ready      → 5 (전 단계 완료)
- *   failed     → -1 (에러 모드)
- * Task 11 에서 세부 phase 가 KV 에 들어오면 이 함수를 phase 기반으로 교체.
- */
-function statusToCompletedSteps(status: PollStatus): number {
-  switch (status) {
-    case 'pending':
-      return 0
-    case 'generating':
-      return 1
-    case 'deploying':
-      return 3 // interpret+generate+commit 완료, deploy 진행 중
-    case 'ready':
-      return STEPS.length
-    case 'failed':
-      return -1
-    default:
-      return 0
-  }
-}
 
 function StepIcon({
   state,

@@ -78,15 +78,47 @@ export default async function Page({
 
 사용자 요청이 AI 가 필요해 보이는 경우(예: "추천", "요약", "번역")에도 **룰 기반 근사치** 로 구현하고 "이 도구는 룰 기반 휴리스틱입니다" 안내 문구 추가.
 
+[초기화 — 처리 3단계 시작 전에 반드시 실행]
+set -euo pipefail   # trap ERR 이 동작하려면 필수
+
+# kv_patch_status / kv_patch_failed 를 trap 핸들러에서 쓸 수 있도록 먼저 source.
+# (Step 3 에서 다시 source 해도 멱등하므로 중복 호출 문제 없음.)
+source scripts/routine-lib/kv.sh
+
+# 실패 단계 추적용 — 각 kv_patch_status 호출 직전에 갱신한다.
+# 초기값 "pending" 은 RequestSchema.lastStatus 의 유효값(pending/interpreting/generating/committing/deploying 중 하나).
+CURRENT_STAGE="pending"
+
+# 어느 단계에서든 에러가 발생하면 status=failed + lastStatus=CURRENT_STAGE 를 한 번에 기록.
+# `|| true` 는 kv_patch_failed 자체가 실패했을 때 trap 재귀를 막기 위한 방어.
+# `trap - ERR` 로 핸들러를 해제한 뒤 exit 해서 재진입을 차단.
+on_error() {
+  trap - ERR
+  kv_patch_failed "${requestId}" "${CURRENT_STAGE}" || true
+  echo "FAILED: ${requestId} stage=${CURRENT_STAGE}" >&2
+  exit 1
+}
+trap on_error ERR
+
 [처리 3단계]
 
 1. 해석 + 코드 생성
+   # (a) 사용자 요청 해석 단계 진입
+   CURRENT_STAGE="interpreting"
+   kv_patch_status "${requestId}" "interpreting"
    - expectedOutcome / problem 에서 title(30자 이내), description(1줄) 추출해 bash 변수로:
        TITLE="<추출>"
        DESC="<추출>"
+
+   # (b) Next.js 코드 생성 단계 진입
+   CURRENT_STAGE="generating"
+   kv_patch_status "${requestId}" "generating"
    - page.tsx 작성해 /tmp/generated-page.tsx 에 Write (Write tool 사용)
 
 2. 브랜치 커밋
+   # (c) git 커밋 + push 단계 진입
+   CURRENT_STAGE="committing"
+   kv_patch_status "${requestId}" "committing"
    source scripts/routine-lib/github.sh
    BRANCH="claude/prototype-${requestId}"
    gh_create_branch supercent-hub "$BRANCH"
@@ -107,11 +139,11 @@ export default async function Page({
    kv_patch_status "${requestId}" "ready"
 
 [실패 처리]
-어느 단계 실패 시:
-   source scripts/routine-lib/kv.sh
-   kv_patch_status "${requestId}" "failed" 2>/dev/null || true
-   echo "FAILED: ${requestId}" >&2
-   exit 1
+모든 실패는 [초기화] 섹션의 `trap on_error ERR` 가 자동 처리한다:
+  - 핸들러가 `kv_patch_failed "${requestId}" "${CURRENT_STAGE}"` 로 status=failed + lastStatus=<직전 단계> 를 원자적으로 기록
+  - 이후 stderr 에 "FAILED: ..." 찍고 exit 1
+명시적 실패 종료가 필요한 경우 단순히 `exit 1` 을 호출해도 trap 이 먼저 돌면서 동일한 처리가 적용된다.
+(주의: deploying 단계는 Vercel 쪽이며 Routine 에서 쓰지 않는다. Routine 이 쓰는 lastStatus 는 interpreting/generating/committing/pending 중 하나.)
 
 [출력]
 stdout 에 최종 로그 한 줄:
@@ -121,7 +153,7 @@ stdout 에 최종 로그 한 줄:
 ## Helper scripts
 
 - `scripts/routine-lib/github.sh` — gh_create_branch, gh_put_file
-- `scripts/routine-lib/kv.sh` — kv_set_json, kv_sadd, kv_patch_status, preview_url_for_branch
+- `scripts/routine-lib/kv.sh` — kv_set_json, kv_sadd, kv_patch_status, kv_patch_failed, preview_url_for_branch
 
 ## Preview URL 규칙
 

@@ -46,10 +46,16 @@ export async function GET(
     return NextResponse.json({ error: 'not found' }, { status: 404 })
   }
 
-  // 2. req.status=failed 우선 처리
+  // 2. req.status=failed 우선 처리 — lastStatus 동반 전달로 UI가 단계별 메시지 렌더
+  //    (record.lastStatus 가 undefined 면 NextResponse.json 직렬화 시 키 자체 생략)
   if (record?.status === 'failed') {
     return NextResponse.json(
-      { id, status: 'failed', updatedAt: new Date().toISOString() },
+      {
+        id,
+        status: 'failed',
+        lastStatus: record.lastStatus,
+        updatedAt: new Date().toISOString(),
+      },
       { headers: NO_CACHE_HEADERS },
     )
   }

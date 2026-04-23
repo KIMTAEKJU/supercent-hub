@@ -49,7 +49,3 @@ AdSpec AI는 단순한 텍스트 생성을 넘어 **"광고 콘셉트 제작 파
 *   **래퍼(Wrapper) 비판:** 단순히 프롬프트만 잘 짜서 결과를 내놓는 수준은 엔지니어링 깊이를 증명하기에 부족하다는 판단에 따라, 더 복잡한 오케스트레이션이 필요한 과제로 피벗하게 되었습니다.
 
 이후 프로젝트는 **VPP(Virtual Playtest Panel)**를 거쳐 최종적으로는 Routines 백엔드 기반의 **Competitor Creative Studio**로 수렴되었습니다.
-
----
-
-*NotebookLM 아카이브 `supercent-study-001-2026-04-18` 기반.*

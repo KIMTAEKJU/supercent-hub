@@ -29,7 +29,8 @@ kv_sadd() {
 }
 
 # req:<id>.status 필드만 PATCH (get → jq set → write-back)
-# 사용: kv_patch_status <request_id> <status>  — status ∈ {pending, ready, failed}
+# 사용: kv_patch_status <request_id> <status>
+#   status ∈ {pending, interpreting, generating, committing, ready, failed}
 kv_patch_status() {
   local req_id="$1" status="$2"
   local body next
@@ -42,6 +43,31 @@ kv_patch_status() {
     return 1
   fi
   next=$(echo "$body" | jq -c --arg s "$status" '.status=$s')
+  kv_set_json "req:$req_id" "$next"
+}
+
+# req:<id>.status = "failed" + lastStatus = <stage> 동시 PATCH.
+# 사용: kv_patch_failed <request_id> <last_stage>
+#   last_stage ∈ {pending, interpreting, generating, committing, deploying}
+# kv_patch_status 와 구조 동일 (GET → jq 수정 → write-back). 두 필드 원자적 갱신.
+# last_stage 가 빈 문자열이면 lastStatus 필드를 생략하고 status 만 failed 로 기록.
+kv_patch_failed() {
+  local req_id="$1" last="$2"
+  local body next
+  body=$(curl -sS \
+    -H "Authorization: Bearer $KV_REST_API_TOKEN" \
+    "$KV_REST_API_URL/get/req:$req_id" \
+    | jq -r '.result')
+  if [ -z "$body" ] || [ "$body" = "null" ]; then
+    echo "ERROR: kv_patch_failed — req:$req_id 없음" >&2
+    return 1
+  fi
+  if [ -n "$last" ]; then
+    next=$(echo "$body" | jq -c --arg s "failed" --arg l "$last" \
+      '.status=$s | .lastStatus=$l')
+  else
+    next=$(echo "$body" | jq -c --arg s "failed" '.status=$s')
+  fi
   kv_set_json "req:$req_id" "$next"
 }
 

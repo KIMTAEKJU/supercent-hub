@@ -50,6 +50,7 @@ import {
   setFeedback,
   listFeedbacks,
   isPromotionCandidate,
+  RequestSchema,
   type RequestRecord,
   type PrototypeRecord,
   type FeedbackRecord,
@@ -191,5 +192,75 @@ describe('kv: isPromotionCandidate', () => {
 
   it('prototype 자체가 없으면 false', async () => {
     expect(await isPromotionCandidate('ghost')).toBe(false)
+  })
+})
+
+describe('RequestSchema status enum extension', () => {
+  it('accepts interpreting status', () => {
+    const parsed = RequestSchema.parse({
+      id: 'r1',
+      problem: 'p',
+      currentWay: 'c',
+      expectedOutcome: 'e',
+      examples: '',
+      status: 'interpreting',
+      createdAt: '2026-04-23T00:00:00Z',
+    })
+    expect(parsed.status).toBe('interpreting')
+  })
+
+  it('accepts committing status', () => {
+    const parsed = RequestSchema.parse({
+      id: 'r1',
+      problem: 'p',
+      currentWay: 'c',
+      expectedOutcome: 'e',
+      examples: '',
+      status: 'committing',
+      createdAt: '2026-04-23T00:00:00Z',
+    })
+    expect(parsed.status).toBe('committing')
+  })
+
+  it('accepts optional last_status for failed records', () => {
+    const parsed = RequestSchema.parse({
+      id: 'r1',
+      problem: 'p',
+      currentWay: 'c',
+      expectedOutcome: 'e',
+      examples: '',
+      status: 'failed',
+      createdAt: '2026-04-23T00:00:00Z',
+      last_status: 'generating',
+    })
+    expect(parsed.last_status).toBe('generating')
+  })
+
+  it('rejects last_status with failed or ready values', () => {
+    expect(() =>
+      RequestSchema.parse({
+        id: 'r1',
+        problem: 'p',
+        currentWay: 'c',
+        expectedOutcome: 'e',
+        examples: '',
+        status: 'failed',
+        createdAt: '2026-04-23T00:00:00Z',
+        last_status: 'ready',
+      }),
+    ).toThrow()
+  })
+
+  it('allows last_status to be omitted', () => {
+    const parsed = RequestSchema.parse({
+      id: 'r1',
+      problem: 'p',
+      currentWay: 'c',
+      expectedOutcome: 'e',
+      examples: '',
+      status: 'pending',
+      createdAt: '2026-04-23T00:00:00Z',
+    })
+    expect(parsed.last_status).toBeUndefined()
   })
 })

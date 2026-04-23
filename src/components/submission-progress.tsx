@@ -40,6 +40,8 @@ import { Progress } from '@/components/ui/progress'
 import type { RequestRecord } from '@/lib/kv'
 import {
   type PollStatus,
+  type StageKey,
+  STAGE_LABEL,
   statusToCompletedSteps,
 } from '@/lib/submission-steps'
 
@@ -91,6 +93,8 @@ export function SubmissionProgress({
 }) {
   const router = useRouter()
   const [status, setStatus] = useState<PollStatus>(initialStatus)
+  // Task 4: 실패 시 폴링 응답으로 전달되는 직전 단계. truthy일 때만 set.
+  const [lastStatus, setLastStatus] = useState<StageKey | null>(null)
   const [pollError, setPollError] = useState<string | null>(null)
   const [elapsedSec, setElapsedSec] = useState(0)
 
@@ -121,9 +125,13 @@ export function SubmissionProgress({
           if (res.status === 404) return
           throw new Error(`status ${res.status}`)
         }
-        const data: { status?: PollStatus } = await res.json()
+        const data: { status?: PollStatus; lastStatus?: StageKey } =
+          await res.json()
         if (cancelled || !data.status) return
         setStatus(data.status)
+        // lastStatus 는 failed 응답에서만 동반됨 — truthy일 때만 갱신해
+        // 이전 값이 무의미하게 null로 되돌아가지 않도록 한다.
+        if (data.lastStatus) setLastStatus(data.lastStatus)
         setPollError(null)
       } catch (err) {
         if (cancelled) return
@@ -275,7 +283,9 @@ export function SubmissionProgress({
             <div className="flex-1 space-y-3">
               <div className="space-y-1">
                 <p className="text-sm font-medium text-red-200">
-                  프로토타입 생성이 실패했습니다
+                  {lastStatus
+                    ? `${STAGE_LABEL[lastStatus]} 단계에서 실패했습니다`
+                    : '프로토타입 생성이 실패했습니다'}
                 </p>
                 <p className="text-xs text-red-100/70">
                   Routine 실행 중 문제가 발생했어요. 요청 내용을 조정해 다시

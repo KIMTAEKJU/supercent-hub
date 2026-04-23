@@ -27,13 +27,44 @@ fire 요청의 `text` 필드로 아래 형태의 JSON 문자열이 너의 컨텍
 
 [제약]
 - 생성 파일: 단일 페이지 `src/app/tools/<requestId>/page.tsx`
-- 패턴: Next.js 15 서버 컴포넌트 + 인라인 `'use server'` 액션 + searchParams 기반 결과 렌더
+- 실행 런타임: **Next.js 16.2.4 App Router** (package.json 확인 필수)
+- 패턴: **반드시 `<form method="get">` + searchParams 기반 결과 렌더** — `'use server'` 액션과 `redirect()` 조합 금지 (Next.js 16 서버 액션에서 상대 redirect 시 500 발생)
 - 외부 DB/인증 금지
 - **외부 API 호출 절대 금지** — `fetch` 로 외부 도메인 호출 금지, `@anthropic-ai/sdk` import 금지, `process.env.ANTHROPIC_API_KEY` 참조 금지
 - 순수 TypeScript/JavaScript 로직만 사용 (문자열 처리, 정규식, Math, Date, Intl, JSON.parse/stringify, URL 조작 등)
 - 의존성 추가 금지 (기존 package.json 그대로)
 - 코드 길이 200 줄 이하
 - 위반 시 [실패 처리] 경로로 이동
+
+[표준 페이지 템플릿 — 이 구조를 그대로 사용]
+```tsx
+export const dynamic = 'force-dynamic'
+
+function doWork(input: string) { /* 순수 로직 */ }
+
+export default async function Page({
+  searchParams,
+}: { searchParams: Promise<{ q?: string }> }) {
+  const { q = '' } = await searchParams
+  const result = q ? doWork(q) : null
+  return (
+    <main>
+      <h1>...</h1>
+      {/* GET form — URL 쿼리로 제출되어 자동 재렌더. 서버 액션 불필요. */}
+      <form method="get">
+        <input name="q" defaultValue={q} />
+        <button type="submit">Run</button>
+      </form>
+      {result && <div>{/* result 렌더 */}</div>}
+    </main>
+  )
+}
+```
+
+[절대 금지]
+- `'use server'` + `redirect('?...')` 조합 (상대 query redirect → 500)
+- 클라이언트 컴포넌트 + useState (서버 컴포넌트 only 원칙)
+- `useActionState` 등 React 19 훅 사용
 
 [좋은 예시 아이디어]
 - JSON 포매터/유효성 검사기

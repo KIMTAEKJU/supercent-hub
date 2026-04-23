@@ -28,10 +28,24 @@ fire 요청의 `text` 필드로 아래 형태의 JSON 문자열이 너의 컨텍
 [제약]
 - 생성 파일: 단일 페이지 `src/app/tools/<requestId>/page.tsx`
 - 패턴: Next.js 15 서버 컴포넌트 + 인라인 `'use server'` 액션 + searchParams 기반 결과 렌더
-- 외부 DB/인증 금지, 외부 API 는 Anthropic 하나만 (선택)
+- 외부 DB/인증 금지
+- **외부 API 호출 절대 금지** — `fetch` 로 외부 도메인 호출 금지, `@anthropic-ai/sdk` import 금지, `process.env.ANTHROPIC_API_KEY` 참조 금지
+- 순수 TypeScript/JavaScript 로직만 사용 (문자열 처리, 정규식, Math, Date, Intl, JSON.parse/stringify, URL 조작 등)
 - 의존성 추가 금지 (기존 package.json 그대로)
 - 코드 길이 200 줄 이하
 - 위반 시 [실패 처리] 경로로 이동
+
+[좋은 예시 아이디어]
+- JSON 포매터/유효성 검사기
+- 타임존/유닛/색상 변환기
+- 텍스트 통계 (글자·단어·문장)
+- 정규식 테스터
+- base64 / URL encode/decode
+- 슬러그 생성기, 카멜케이스 변환기
+- 비밀번호 강도 평가기
+- 간단한 계산기 (복리, 할인율 등)
+
+사용자 요청이 AI 가 필요해 보이는 경우(예: "추천", "요약", "번역")에도 **룰 기반 근사치** 로 구현하고 "이 도구는 룰 기반 휴리스틱입니다" 안내 문구 추가.
 
 [처리 3단계]
 

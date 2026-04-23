@@ -7,7 +7,7 @@
  * 동작:
  *   - KV 에서 `proto:<id>` 조회
  *   - 없으면 404 (Next.js notFound)
- *   - 있으면 title/description + "프로토타입 열기" 링크 (proto.url 로 새 탭) + "카탈로그로" 링크
+ *   - 있으면 title/description + "프로토타입 열기" 링크 (liveUrl 로 새 탭) + "카탈로그로" 링크
  *
  * Task 16 에서 이 파일을 풀기능 상세 페이지(iframe 임베드 + 피드백 폼)로 대체한다.
  */
@@ -17,6 +17,7 @@ import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { Badge } from '@/components/ui/badge'
 import { getPrototype } from '@/lib/kv'
+import { getLivePreviewUrl } from '@/lib/vercel'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +29,9 @@ export default async function PrototypeDetailPage({
   const { id } = await params
   const proto = await getPrototype(id)
   if (!proto) notFound()
+
+  // Vercel API 로 실제 배포 alias 조회. 실패/미설정 시 KV 의 proto.url (결정론 조립 — 부정확) 로 fallback.
+  const liveUrl = (await getLivePreviewUrl(proto.branch)) ?? proto.url
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -46,12 +50,12 @@ export default async function PrototypeDetailPage({
           <div>
             <div className="mb-1 text-xs uppercase tracking-wider text-white/50">Preview URL</div>
             <a
-              href={proto.url}
+              href={liveUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="break-all text-sm text-amber-500 underline-offset-4 hover:underline"
             >
-              {proto.url}
+              {liveUrl}
             </a>
           </div>
           <div>
@@ -66,7 +70,7 @@ export default async function PrototypeDetailPage({
 
         <div className="flex flex-wrap gap-3">
           <a
-            href={proto.url}
+            href={liveUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-amber-400"

@@ -40,7 +40,18 @@ export const RequestSchema = z.object({
   // 와이어프레임 3: "예시 입력/출력 (선택)" — optional 필드.
   // 기존 mock/테스트 데이터는 항상 채워 넣지만, 폼에서 빈 값이면 생략될 수 있다.
   examples: z.string().default(''),
-  status: z.enum(['pending', 'generating', 'ready', 'failed']),
+  status: z.enum([
+    'pending',
+    'interpreting',
+    'generating',
+    'committing',
+    'ready',
+    'failed',
+  ]),
+  // Routine 이 실패 시 직전 단계를 기록. ready/failed 는 상태 그 자체이므로 제외.
+  lastStatus: z
+    .enum(['pending', 'interpreting', 'generating', 'committing', 'deploying'])
+    .optional(),
   createdAt: z.string(),
   // Routine 실행 추적용 (부록 B): 선기록 시점엔 없음, Routine 이 쓰면 채워짐.
   sessionUrl: z.string().url().optional(),

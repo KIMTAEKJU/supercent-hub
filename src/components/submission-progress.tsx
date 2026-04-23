@@ -45,6 +45,9 @@ import { Progress } from '@/components/ui/progress'
 import type { RequestRecord } from '@/lib/kv'
 
 type KvStatus = RequestRecord['status']
+// Phase 2 Task 11 (Option X): /api/proto/[id]/status 가 Vercel 배포 BUILDING 일 때
+// 'deploying' 가상 상태를 반환. terminal 아님 (계속 폴링).
+type PollStatus = KvStatus | 'deploying'
 
 type Step = {
   key: 'interpret' | 'generate' | 'commit' | 'deploy' | 'register'
@@ -72,12 +75,14 @@ const TIMEOUT_MS = 30 * 60 * 1_000 // 30 분
  *   failed     → -1 (에러 모드)
  * Task 11 에서 세부 phase 가 KV 에 들어오면 이 함수를 phase 기반으로 교체.
  */
-function statusToCompletedSteps(status: KvStatus): number {
+function statusToCompletedSteps(status: PollStatus): number {
   switch (status) {
     case 'pending':
       return 0
     case 'generating':
       return 1
+    case 'deploying':
+      return 3 // interpret+generate+commit 완료, deploy 진행 중
     case 'ready':
       return STEPS.length
     case 'failed':
@@ -113,7 +118,7 @@ export function SubmissionProgress({
   createdAt: string
 }) {
   const router = useRouter()
-  const [status, setStatus] = useState<KvStatus>(initialStatus)
+  const [status, setStatus] = useState<PollStatus>(initialStatus)
   const [pollError, setPollError] = useState<string | null>(null)
   const [elapsedSec, setElapsedSec] = useState(0)
 
@@ -144,7 +149,7 @@ export function SubmissionProgress({
           if (res.status === 404) return
           throw new Error(`status ${res.status}`)
         }
-        const data: { status?: KvStatus } = await res.json()
+        const data: { status?: PollStatus } = await res.json()
         if (cancelled || !data.status) return
         setStatus(data.status)
         setPollError(null)

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="ui-sans-serif, system-ui, sans-serif">
+  <style>
+    .frame { fill: #ffffff; stroke: #374151; stroke-width: 2; }
+    .box { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.5; }
+    .boxDash { fill: #f9fafb; stroke: #9ca3af; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .accent { fill: #111827; stroke: #111827; }
+    .accentBtn { fill: #f59e0b; stroke: #b45309; stroke-width: 1.5; }
+    .done { fill: #d1fae5; stroke: #10b981; }
+    .cur { fill: #fef3c7; stroke: #f59e0b; }
+    .pending { fill: #f3f4f6; stroke: #9ca3af; stroke-dasharray: 6 4; }
+    .label { fill: #111827; font-size: 14px; }
+    .tag { fill: #6b7280; font-size: 11px; }
+    .ttl { fill: #111827; font-size: 22px; font-weight: 700; }
+    .step { fill: #111827; font-size: 13px; font-weight: 600; }
+  </style>
+
+  <rect class="frame" x="1" y="1" width="1198" height="798" />
+
+  <!-- Header -->
+  <rect class="box" x="0" y="0" width="1200" height="60" />
+  <rect class="accent" x="40" y="20" width="18" height="18" rx="3" />
+  <text class="label" x="70" y="35" font-weight="700">Tool Hub</text>
+  <text class="label" x="950" y="35">카탈로그</text>
+  <text class="label" x="1040" y="35">요청하기</text>
+
+  <!-- Breadcrumb -->
+  <text class="tag" x="40" y="95">홈 / 도구 요청하기 / 생성 중</text>
+
+  <!-- Big card center -->
+  <rect class="box" x="150" y="130" width="900" height="580" rx="10" />
+
+  <!-- Request summary -->
+  <text class="tag" x="180" y="170">Request ID:  req_7f2ac8b3</text>
+  <text class="tag" x="180" y="188">제출 시각:  2026-04-23 14:32:11</text>
+  <text class="tag" x="180" y="206">요청자:  @taejun</text>
+
+  <!-- Title -->
+  <text class="ttl" x="600" y="250" text-anchor="middle">프로토타입 생성 중…</text>
+  <text class="tag" x="600" y="275" text-anchor="middle">창을 닫아도 괜찮습니다. 완료되면 카탈로그에서 확인할 수 있어요.</text>
+
+  <!-- 5 step progress bar -->
+  <line x1="220" y1="370" x2="980" y2="370" stroke="#e5e7eb" stroke-width="4" />
+  <line x1="220" y1="370" x2="600" y2="370" stroke="#10b981" stroke-width="4" />
+
+  <!-- step 1 -->
+  <circle class="done" cx="220" cy="370" r="20" />
+  <text class="step" x="220" y="375" text-anchor="middle">1</text>
+  <text class="step" x="220" y="415" text-anchor="middle">요청 해석</text>
+  <text class="tag" x="220" y="435" text-anchor="middle">완료 · 8s</text>
+
+  <!-- step 2 -->
+  <circle class="done" cx="410" cy="370" r="20" />
+  <text class="step" x="410" y="375" text-anchor="middle">2</text>
+  <text class="step" x="410" y="415" text-anchor="middle">코드 생성</text>
+  <text class="tag" x="410" y="435" text-anchor="middle">완료 · 22s</text>
+
+  <!-- step 3 (current) -->
+  <circle class="cur" cx="600" cy="370" r="24" />
+  <text class="step" x="600" y="376" text-anchor="middle">3</text>
+  <text class="step" x="600" y="415" text-anchor="middle">Git 커밋</text>
+  <text class="tag" x="600" y="435" text-anchor="middle" fill="#b45309" font-weight="700">진행 중…</text>
+
+  <!-- step 4 -->
+  <circle class="pending" cx="790" cy="370" r="20" />
+  <text class="step" x="790" y="375" text-anchor="middle" fill="#9ca3af">4</text>
+  <text class="step" x="790" y="415" text-anchor="middle" fill="#9ca3af">Vercel 배포</text>
+  <text class="tag" x="790" y="435" text-anchor="middle">대기</text>
+
+  <!-- step 5 -->
+  <circle class="pending" cx="980" cy="370" r="20" />
+  <text class="step" x="980" y="375" text-anchor="middle" fill="#9ca3af">5</text>
+  <text class="step" x="980" y="415" text-anchor="middle" fill="#9ca3af">카탈로그 등록</text>
+  <text class="tag" x="980" y="435" text-anchor="middle">대기</text>
+
+  <!-- Elapsed + technical hint -->
+  <line x1="180" y1="490" x2="1020" y2="490" stroke="#e5e7eb" />
+  <text class="label" x="180" y="525">경과 시간:  0:43</text>
+  <text class="tag" x="180" y="548">예상 완료:  1:00 - 2:00 (Vercel 빌드 포함)</text>
+
+  <text class="tag" x="600" y="525" text-anchor="middle" font-weight="600">배포 완료 후 자동으로 상세 페이지로 이동합니다</text>
+  <text class="tag" x="600" y="545" text-anchor="middle">(3초 간격 폴링 / KV 상태 + Vercel deployment.state READY 이중 확인)</text>
+
+  <!-- Actions -->
+  <rect class="box" x="360" y="600" width="220" height="44" rx="6" />
+  <text class="label" x="470" y="627" text-anchor="middle">카탈로그로</text>
+  <rect class="accentBtn" x="620" y="600" width="220" height="44" rx="6" />
+  <text class="label" x="730" y="627" text-anchor="middle" fill="#fff" font-weight="700">새 요청 시작하기</text>
+
+  <!-- Timeout warning (hidden/faded) -->
+  <rect class="boxDash" x="180" y="660" width="840" height="40" rx="6" opacity="0.6" />
+  <text class="tag" x="600" y="685" text-anchor="middle">(3분 경과 시 표시)  ⚠️ 예상보다 오래 걸리고 있어요. 실패 시 재시도 가능.</text>
+
+  <!-- Failure state note -->
+  <text class="tag" x="600" y="740" text-anchor="middle">실패 경로: req.status = "failed" → 빨간 배너 + "요청 다시 쓰기" CTA (/request 로)</text>
+
+  <!-- Footer -->
+  <line x1="0" y1="790" x2="1200" y2="790" stroke="#e5e7eb" />
+  <text class="tag" x="40" y="790">04 · Submitting (/submitting/[id])</text>
+  <text class="tag" x="1160" y="790" text-anchor="end">Wireframe — 저화질 레이아웃</text>
+</svg>

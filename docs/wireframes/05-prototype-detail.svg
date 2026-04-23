@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="ui-sans-serif, system-ui, sans-serif">
+  <style>
+    .frame { fill: #ffffff; stroke: #374151; stroke-width: 2; }
+    .box { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.5; }
+    .boxDash { fill: #f9fafb; stroke: #9ca3af; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .code { fill: #fff; stroke: #9ca3af; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .accent { fill: #111827; stroke: #111827; }
+    .accentBtn { fill: #f59e0b; stroke: #b45309; stroke-width: 1.5; }
+    .label { fill: #111827; font-size: 14px; }
+    .tag { fill: #6b7280; font-size: 11px; }
+    .mono { fill: #374151; font-size: 11px; font-family: ui-monospace, Menlo, monospace; }
+    .ttl { fill: #111827; font-size: 22px; font-weight: 700; }
+    .h3 { fill: #111827; font-size: 16px; font-weight: 700; }
+    .badge { fill: #fef3c7; stroke: #f59e0b; }
+  </style>
+
+  <rect class="frame" x="1" y="1" width="1198" height="798" />
+
+  <!-- Header -->
+  <rect class="box" x="0" y="0" width="1200" height="60" />
+  <rect class="accent" x="40" y="20" width="18" height="18" rx="3" />
+  <text class="label" x="70" y="35" font-weight="700">Tool Hub</text>
+  <text class="label" x="950" y="35">카탈로그</text>
+  <text class="label" x="1040" y="35">요청하기</text>
+
+  <!-- Breadcrumb -->
+  <text class="tag" x="40" y="95">홈 / 카탈로그 / ROAS 계산기</text>
+
+  <!-- Header row with badge -->
+  <rect class="badge" x="40" y="115" width="86" height="24" rx="3" />
+  <text class="tag" x="83" y="131" text-anchor="middle" fill="#b45309" font-weight="700">승격 후보</text>
+  <text class="ttl" x="40" y="170">ROAS 계산기</text>
+  <text class="tag" x="40" y="195">광고비와 매출 입력 → ROAS % + 순이익 + 흑자/적자 판정</text>
+
+  <!-- Metadata row -->
+  <text class="tag" x="40" y="230">👤 요청:  @jaemin</text>
+  <text class="tag" x="160" y="230">📅  2026-04-22 15:41</text>
+  <text class="tag" x="320" y="230">▶ 사용 12회</text>
+  <text class="tag" x="420" y="230">⭐ 긍정 피드백 3건</text>
+  <text class="tag" x="580" y="230">🌿 claude/prototype-req_abc123</text>
+
+  <!-- Main CTA -->
+  <rect class="accentBtn" x="40" y="260" width="320" height="58" rx="6" />
+  <text class="label" x="200" y="297" text-anchor="middle" fill="#fff" font-weight="700" font-size="16">▶ 프로토타입 열기 (새 탭)</text>
+
+  <!-- Secondary info card -->
+  <rect class="boxDash" x="380" y="260" width="780" height="58" rx="6" />
+  <text class="mono" x="400" y="285">Preview URL:  https://supercent-hub-git-claude-prototype-....vercel.app</text>
+  <text class="mono" x="400" y="305">Source:  github.com/KIMTAEKJU/supercent-hub/blob/claude/prototype-.../src/app/tools/.../page.tsx</text>
+
+  <!-- Embedded preview (iframe placeholder) -->
+  <text class="h3" x="40" y="360">미리보기</text>
+  <rect class="code" x="40" y="375" width="780" height="260" rx="4" />
+  <text class="tag" x="430" y="430" text-anchor="middle" font-size="14">iframe 또는 정적 캡처</text>
+  <text class="tag" x="430" y="455" text-anchor="middle">(iframe 불가 시 최초 1회 자동 스크린샷 저장 후 표시)</text>
+  <text class="mono" x="60" y="500">[Input: 광고비]  [Input: 매출]  [계산하기]</text>
+  <text class="mono" x="60" y="540">결과:  ROAS = 250%  ·  순이익 = 1,500,000 원  ·  흑자</text>
+
+  <!-- Right: Feedback panel -->
+  <text class="h3" x="850" y="360">피드백</text>
+  <rect class="box" x="840" y="375" width="320" height="260" rx="6" />
+
+  <rect class="box" x="860" y="400" width="60" height="60" rx="8" />
+  <text class="label" x="890" y="440" text-anchor="middle" font-size="22">👍</text>
+  <text class="tag" x="890" y="472" text-anchor="middle">좋아요 (3)</text>
+
+  <rect class="box" x="940" y="400" width="60" height="60" rx="8" />
+  <text class="label" x="970" y="440" text-anchor="middle" font-size="22">👎</text>
+  <text class="tag" x="970" y="472" text-anchor="middle">아쉬워요 (0)</text>
+
+  <rect x="860" y="500" width="280" height="80" rx="4" fill="#fff" stroke="#9ca3af" stroke-width="1.5" />
+  <text class="tag" x="876" y="525">개선 요청 (선택)</text>
+  <text class="tag" x="876" y="548">예) "부가세 계산도 포함해주세요"</text>
+
+  <rect class="accent" x="860" y="595" width="280" height="34" rx="4" />
+  <text class="label" x="1000" y="617" text-anchor="middle" fill="#fff">제출 + refine 트리거</text>
+
+  <!-- Related prototypes -->
+  <text class="h3" x="40" y="685">관련 도구</text>
+  <rect class="box" x="40" y="700" width="240" height="70" rx="6" />
+  <text class="label" x="58" y="728" font-weight="600">JSON 포매터</text>
+  <text class="tag" x="58" y="748">@soyeon · ▶ 8</text>
+  <rect class="box" x="300" y="700" width="240" height="70" rx="6" />
+  <text class="label" x="318" y="728" font-weight="600">HEX 색상 변환기</text>
+  <rect class="box" x="560" y="700" width="240" height="70" rx="6" />
+  <text class="label" x="578" y="728" font-weight="600">(다른 도구)</text>
+  <rect class="boxDash" x="820" y="700" width="340" height="70" rx="6" />
+  <text class="tag" x="990" y="742" text-anchor="middle">카탈로그 전체 보기 →</text>
+
+  <!-- Footer -->
+  <line x1="0" y1="790" x2="1200" y2="790" stroke="#e5e7eb" />
+  <text class="tag" x="40" y="790">05 · Prototype Detail (/prototype/[id])</text>
+  <text class="tag" x="1160" y="790" text-anchor="end">Wireframe — 저화질 레이아웃</text>
+</svg>

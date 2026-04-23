@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="ui-sans-serif, system-ui, sans-serif">
+  <style>
+    .frame { fill: #ffffff; stroke: #374151; stroke-width: 2; }
+    .box { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.5; }
+    .boxDash { fill: #f9fafb; stroke: #9ca3af; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .accent { fill: #111827; stroke: #111827; }
+    .accentBtn { fill: #f59e0b; stroke: #b45309; stroke-width: 1.5; }
+    .label { fill: #111827; font-size: 14px; }
+    .tag { fill: #6b7280; font-size: 11px; }
+    .ttl { fill: #111827; font-size: 22px; font-weight: 700; }
+    .mega { fill: #111827; font-size: 36px; font-weight: 800; }
+    .num { fill: #111827; font-size: 28px; font-weight: 800; }
+    .badge { fill: #fef3c7; stroke: #f59e0b; }
+  </style>
+
+  <!-- Frame -->
+  <rect class="frame" x="1" y="1" width="1198" height="798" />
+
+  <!-- Header -->
+  <rect class="box" x="0" y="0" width="1200" height="60" />
+  <rect class="accent" x="40" y="20" width="18" height="18" rx="3" />
+  <text class="label" x="70" y="35" font-weight="700">Tool Hub</text>
+  <text class="label" x="950" y="35">카탈로그</text>
+  <text class="label" x="1040" y="35">요청하기</text>
+  <text class="tag" x="1020" y="50">Navigation (/)</text>
+
+  <!-- Hero -->
+  <text class="mega" x="600" y="150" text-anchor="middle">사내 AI 도구, 2분 만에</text>
+  <text class="ttl" x="600" y="190" text-anchor="middle" fill="#4b5563" font-weight="400">요청하면 Routine 이 만듭니다</text>
+  <rect class="accentBtn" x="500" y="220" width="200" height="50" rx="6" />
+  <text class="label" x="600" y="252" text-anchor="middle" font-weight="700" fill="#fff">도구 요청하기 →</text>
+  <text class="tag" x="600" y="290" text-anchor="middle">Hero CTA (primary action)</text>
+
+  <!-- Counters -->
+  <line x1="0" y1="320" x2="1200" y2="320" stroke="#e5e7eb" stroke-width="1" />
+  <g>
+    <rect class="boxDash" x="80" y="350" width="320" height="90" rx="6" />
+    <text class="num" x="240" y="395" text-anchor="middle">42</text>
+    <text class="tag" x="240" y="420" text-anchor="middle">총 요청</text>
+
+    <rect class="boxDash" x="440" y="350" width="320" height="90" rx="6" />
+    <text class="num" x="600" y="395" text-anchor="middle">23</text>
+    <text class="tag" x="600" y="420" text-anchor="middle">프로토타입</text>
+
+    <rect class="boxDash" x="800" y="350" width="320" height="90" rx="6" />
+    <text class="num" x="960" y="395" text-anchor="middle">3</text>
+    <text class="tag" x="960" y="420" text-anchor="middle">승격 후보</text>
+  </g>
+
+  <!-- Recent prototypes grid -->
+  <text class="ttl" x="80" y="495">최근 프로토타입</text>
+  <text class="tag" x="250" y="495">(createdAt desc, 최대 6장)</text>
+
+  <!-- row 1 -->
+  <rect class="box" x="80" y="520" width="330" height="120" rx="6" />
+  <rect class="badge" x="96" y="536" width="80" height="22" rx="3" />
+  <text class="tag" x="106" y="551" fill="#b45309">승격 후보</text>
+  <text class="label" x="96" y="584" font-weight="700">ROAS 계산기</text>
+  <text class="tag" x="96" y="608">광고비 · 매출 → ROAS %</text>
+
+  <rect class="box" x="435" y="520" width="330" height="120" rx="6" />
+  <text class="label" x="451" y="555" font-weight="700">JSON 포매터</text>
+  <text class="tag" x="451" y="580">1줄 JSON → 예쁜 들여쓰기</text>
+
+  <rect class="box" x="790" y="520" width="330" height="120" rx="6" />
+  <text class="label" x="806" y="555" font-weight="700">HEX 색상 변환기</text>
+  <text class="tag" x="806" y="580">#RRGGBB → RGB/HSL + 샘플</text>
+
+  <!-- row 2 -->
+  <rect class="box" x="80" y="660" width="330" height="100" rx="6" />
+  <text class="label" x="96" y="695" font-weight="700">(추가 프로토타입)</text>
+  <text class="tag" x="96" y="720">요청이 쌓이며 카드가 늘어남</text>
+
+  <rect class="box" x="435" y="660" width="330" height="100" rx="6" />
+  <text class="label" x="451" y="695" font-weight="700">(추가 프로토타입)</text>
+
+  <rect class="boxDash" x="790" y="660" width="330" height="100" rx="6" />
+  <text class="tag" x="955" y="715" text-anchor="middle">"전체 보기 →" /catalog</text>
+
+  <!-- Footer -->
+  <line x1="0" y1="790" x2="1200" y2="790" stroke="#e5e7eb" />
+  <text class="tag" x="40" y="790">01 · Landing (/)</text>
+  <text class="tag" x="1160" y="790" text-anchor="end">Wireframe — 저화질 레이아웃</text>
+</svg>

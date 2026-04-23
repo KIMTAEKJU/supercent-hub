@@ -31,7 +31,9 @@ export default async function PrototypeDetailPage({
   if (!proto) notFound()
 
   // Vercel API 로 실제 배포 alias 조회. 실패/미설정 시 KV 의 proto.url (결정론 조립 — 부정확) 로 fallback.
-  const liveUrl = (await getLivePreviewUrl(proto.branch)) ?? proto.url
+  const baseUrl = (await getLivePreviewUrl(proto.branch)) ?? proto.url
+  // Routine 은 `src/app/tools/<requestId>/page.tsx` 에 프로토타입 생성 → base URL 에 경로 붙여야 실제 도구 접근.
+  const toolUrl = `${baseUrl}/tools/${proto.id}`
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -50,12 +52,12 @@ export default async function PrototypeDetailPage({
           <div>
             <div className="mb-1 text-xs uppercase tracking-wider text-white/50">Preview URL</div>
             <a
-              href={liveUrl}
+              href={toolUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="break-all text-sm text-amber-500 underline-offset-4 hover:underline"
             >
-              {liveUrl}
+              {toolUrl}
             </a>
           </div>
           <div>
@@ -70,7 +72,7 @@ export default async function PrototypeDetailPage({
 
         <div className="flex flex-wrap gap-3">
           <a
-            href={liveUrl}
+            href={toolUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-amber-400"

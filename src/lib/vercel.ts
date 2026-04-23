@@ -37,26 +37,45 @@ type VercelDeployment = {
  */
 export async function getLivePreviewUrl(branch: string): Promise<string | null> {
   const token = process.env.VERCEL_TOKEN
-  if (!token) return null
+  if (!token) {
+    console.error('[vercel] VERCEL_TOKEN env missing at runtime')
+    return null
+  }
 
   const qs = new URLSearchParams({
     projectId: VERCEL_PROJECT_ID,
     teamId: VERCEL_TEAM_ID,
     target: 'preview',
-    state: 'READY',
-    limit: '50',
+    limit: '100',
+    // state 필터 제거 — Building 배포도 반환해야 방금 막 생성된 건 매칭됨.
+    // 빌드 실패/취소한 배포가 끼면 URL 이 "사이트 없음" 일 수 있으나 READY 필터만 쓰면 Building 중에는 null 반환 → fallback 결정론 URL 이 오히려 더 부정확.
   })
   const res = await fetch(`https://api.vercel.com/v6/deployments?${qs}`, {
     headers: { Authorization: `Bearer ${token}` },
-    next: { revalidate: 30 },
+    cache: 'no-store',
   })
-  if (!res.ok) return null
+  if (!res.ok) {
+    console.error(`[vercel] API error ${res.status} for branch=${branch}`)
+    return null
+  }
 
   const data = (await res.json()) as { deployments?: VercelDeployment[] }
-  const match = data.deployments?.find((d) => d.meta?.githubCommitRef === branch)
-  if (!match) return null
+  // READY 우선, 없으면 Building 중인 가장 최근 것 반환.
+  const ready = data.deployments?.find(
+    (d) => d.meta?.githubCommitRef === branch && d.state === 'READY',
+  )
+  const building = data.deployments?.find(
+    (d) => d.meta?.githubCommitRef === branch,
+  )
+  const match = ready ?? building
+  if (!match) {
+    console.error(
+      `[vercel] no deployment for branch=${branch}, total=${data.deployments?.length}`,
+    )
+    return null
+  }
 
-  // branch alias 가 있으면 우선 (영구 URL). 없으면 hash-based url.
+  // branch alias (영구 URL) 우선, 없으면 hash-based deployment url.
   const branchAlias = match.alias?.find((a) => a.includes('-git-'))
   return `https://${branchAlias ?? match.url}`
 }

@@ -17,6 +17,7 @@
 - [**decisions.md**](decisions.md) — 7개 주요 기술 의사결정 (왜 Routines, 왜 KV, 왜 4필드, 왜 fire-and-forget, 왜 `claude/` 브랜치, 왜 GET form 패턴 등)
 - [**lessons.md**](lessons.md) — 각 단계가 다음 단계로 넘긴 사실·결정의 인과 관계
 - [**references.md**](references.md) — 설계 과정에서 참조한 **외부 자료 40+** (슈퍼센트 공식 블로그, Claude Code 공식 문서, 학술 논문, 경쟁 선례 등)
+- [**vibe-prompts.md**](vibe-prompts.md) — 프로젝트 전체에서 AI 에게 보낸 **바이브코딩 지시 50+ 원문 연대기** (Phase -1 ~ Phase 5)
 
 ## 이 기록의 의도
 

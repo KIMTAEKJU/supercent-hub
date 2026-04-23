@@ -49,7 +49,7 @@ export const RequestSchema = z.object({
     'failed',
   ]),
   // Routine 이 실패 시 직전 단계를 기록. ready/failed 는 상태 그 자체이므로 제외.
-  last_status: z
+  lastStatus: z
     .enum(['pending', 'interpreting', 'generating', 'committing', 'deploying'])
     .optional(),
   createdAt: z.string(),

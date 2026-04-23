@@ -222,7 +222,7 @@ describe('RequestSchema status enum extension', () => {
     expect(parsed.status).toBe('committing')
   })
 
-  it('accepts optional last_status for failed records', () => {
+  it('accepts optional lastStatus for failed records', () => {
     const parsed = RequestSchema.parse({
       id: 'r1',
       problem: 'p',
@@ -231,27 +231,30 @@ describe('RequestSchema status enum extension', () => {
       examples: '',
       status: 'failed',
       createdAt: '2026-04-23T00:00:00Z',
-      last_status: 'generating',
+      lastStatus: 'generating',
     })
-    expect(parsed.last_status).toBe('generating')
+    expect(parsed.lastStatus).toBe('generating')
   })
 
-  it('rejects last_status with failed or ready values', () => {
-    expect(() =>
-      RequestSchema.parse({
-        id: 'r1',
-        problem: 'p',
-        currentWay: 'c',
-        expectedOutcome: 'e',
-        examples: '',
-        status: 'failed',
-        createdAt: '2026-04-23T00:00:00Z',
-        last_status: 'ready',
-      }),
-    ).toThrow()
-  })
+  it.each(['ready', 'failed'] as const)(
+    'rejects lastStatus with reserved value "%s"',
+    (reserved) => {
+      expect(() =>
+        RequestSchema.parse({
+          id: 'r1',
+          problem: 'p',
+          currentWay: 'c',
+          expectedOutcome: 'e',
+          examples: '',
+          status: 'failed',
+          createdAt: '2026-04-23T00:00:00Z',
+          lastStatus: reserved,
+        }),
+      ).toThrow()
+    },
+  )
 
-  it('allows last_status to be omitted', () => {
+  it('allows lastStatus to be omitted', () => {
     const parsed = RequestSchema.parse({
       id: 'r1',
       problem: 'p',
@@ -261,6 +264,6 @@ describe('RequestSchema status enum extension', () => {
       status: 'pending',
       createdAt: '2026-04-23T00:00:00Z',
     })
-    expect(parsed.last_status).toBeUndefined()
+    expect(parsed.lastStatus).toBeUndefined()
   })
 })

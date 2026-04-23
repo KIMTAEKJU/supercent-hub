@@ -84,7 +84,7 @@
   <rect class="box" x="360" y="600" width="220" height="44" rx="6" />
   <text class="label" x="470" y="627" text-anchor="middle">카탈로그로</text>
   <rect class="accentBtn" x="620" y="600" width="220" height="44" rx="6" />
-  <text class="label" x="730" y="627" text-anchor="middle" fill="#fff" font-weight="700">새 요청 시작하기</text>
+  <text class="label" x="730" y="627" text-anchor="middle" style="fill:#fff" font-weight="700">새 요청 시작하기</text>
 
   <!-- Timeout warning (hidden/faded) -->
   <rect class="boxDash" x="180" y="660" width="840" height="40" rx="6" opacity="0.6" />

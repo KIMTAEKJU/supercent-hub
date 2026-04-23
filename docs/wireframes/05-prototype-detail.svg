@@ -41,7 +41,7 @@
 
   <!-- Main CTA -->
   <rect class="accentBtn" x="40" y="260" width="320" height="58" rx="6" />
-  <text class="label" x="200" y="297" text-anchor="middle" fill="#fff" font-weight="700" font-size="16">▶ 프로토타입 열기 (새 탭)</text>
+  <text class="label" x="200" y="297" text-anchor="middle" style="fill:#fff" font-weight="700" font-size="16">▶ 프로토타입 열기 (새 탭)</text>
 
   <!-- Secondary info card -->
   <rect class="boxDash" x="380" y="260" width="780" height="58" rx="6" />
@@ -73,7 +73,7 @@
   <text class="tag" x="876" y="548">예) "부가세 계산도 포함해주세요"</text>
 
   <rect class="accent" x="860" y="595" width="280" height="34" rx="4" />
-  <text class="label" x="1000" y="617" text-anchor="middle" fill="#fff">제출 + refine 트리거</text>
+  <text class="label" x="1000" y="617" text-anchor="middle" style="fill:#fff">제출 + refine 트리거</text>
 
   <!-- Related prototypes -->
   <text class="h3" x="40" y="685">관련 도구</text>

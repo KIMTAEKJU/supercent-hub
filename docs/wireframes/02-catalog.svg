@@ -19,7 +19,7 @@
   <rect class="accent" x="40" y="20" width="18" height="18" rx="3" />
   <text class="label" x="70" y="35" font-weight="700">Tool Hub</text>
   <rect x="948" y="18" width="72" height="24" rx="3" fill="#111827" />
-  <text class="label" x="984" y="35" text-anchor="middle" fill="#fff">카탈로그</text>
+  <text class="label" x="984" y="35" text-anchor="middle" style="fill:#fff">카탈로그</text>
   <text class="label" x="1060" y="35">요청하기</text>
 
   <!-- Title -->
@@ -32,12 +32,12 @@
   <rect class="box" x="760" y="135" width="180" height="46" rx="6" />
   <text class="label" x="850" y="163" text-anchor="middle">최신순 ▼</text>
   <rect class="accent" x="960" y="135" width="200" height="46" rx="6" />
-  <text class="label" x="1060" y="163" text-anchor="middle" fill="#fff">+ 새 도구 요청</text>
+  <text class="label" x="1060" y="163" text-anchor="middle" style="fill:#fff">+ 새 도구 요청</text>
 
   <!-- Tag chips -->
   <g>
     <rect class="chipActive" x="40" y="200" width="60" height="28" rx="14" />
-    <text class="tag" x="70" y="218" text-anchor="middle" fill="#fff">전체</text>
+    <text class="tag" x="70" y="218" text-anchor="middle" style="fill:#fff">전체</text>
     <rect class="chip" x="112" y="200" width="72" height="28" rx="14" />
     <text class="tag" x="148" y="218" text-anchor="middle">기획</text>
     <rect class="chip" x="196" y="200" width="84" height="28" rx="14" />
